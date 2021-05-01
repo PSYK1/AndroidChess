@@ -9,35 +9,35 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:layout_editor_absoluteX="209dp"
-        tools:layout_editor_absoluteY="253dp">
+        tools:layout_editor_absoluteX="184dp"
+        tools:layout_editor_absoluteY="312dp">
 
         <TextView
-            android:id="@+id/txt"
+            android:id="@+id/textView2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView"
+            android:text="Save Game"
             android:textAlignment="center"
             android:textSize="24sp" />
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/textView3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Would You Like To Save the Game"
-            android:textAlignment="center"
-            android:textSize="24sp" />
+            android:text="File Name:" />
+
+        <EditText
+            android:id="@+id/gameName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:textAlignment="center" />
 
         <Button
-            android:id="@+id/save"
+            android:id="@+id/saveButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Save" />
-
-        <Button
-            android:id="@+id/noSave"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Don't Save" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

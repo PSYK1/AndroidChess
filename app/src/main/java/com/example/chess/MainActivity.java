@@ -4,12 +4,12 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -17,6 +17,10 @@ import android.widget.Toast;
 
 import com.example.chess.chessBoard.*;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -30,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Board board = new Board();
 
+    String pathSeparator = System.getProperty("file.separator");
+
     String turn = "w";
     String pos1 = "";
     String pos2 = "";
@@ -38,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     boolean draw = false;
     boolean checkmate = false;
     boolean drawOffer = false;
+
+    int confirmSaveFileNum = 0;
 
     int selectionCount = 0;
 
@@ -305,10 +313,18 @@ public class MainActivity extends AppCompatActivity {
         btn = (Button) popup.findViewById(R.id.accept);
         btnTwo = (Button) popup.findViewById(R.id.decline);
 
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                saveOptionOnDraw();
+            }
+        });
+
         btnTwo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.hide();
+                dialog.dismiss();
             }
         });
 
@@ -321,7 +337,12 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    public void saveOptionOnDraw(View v) {
+    public void resign(View v) {
+        String winner = (turn.equals("w") ? "Black" : "White");
+        saveOptionOnCheckmate(winner);
+    }
+
+    public void saveOptionOnDraw() {
         dialogBuilder = new AlertDialog.Builder(this);
         View popup = getLayoutInflater().inflate(R.layout.save_option_popup, null);
 
@@ -334,10 +355,22 @@ public class MainActivity extends AppCompatActivity {
         dialogBuilder.setView(popup);
         dialog = dialogBuilder.create();
         dialog.show();
-    }
 
-    public void resign(View v) {
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                save();
+            }
+        });
 
+        btnTwo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                endPopup("The game has not ");
+            }
+        });
     }
 
     public void saveOptionOnCheckmate(String winner) {
@@ -348,6 +381,22 @@ public class MainActivity extends AppCompatActivity {
         btn = (Button) popup.findViewById(R.id.save);
         btnTwo = (Button) popup.findViewById(R.id.noSave);
 
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                save();
+            }
+        });
+
+        btnTwo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                endPopup("The game has not");
+            }
+        });
+
         info.setText(winner + " has won");
 
         dialogBuilder.setView(popup);
@@ -356,7 +405,107 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void save() {
-        
+        dialogBuilder = new AlertDialog.Builder(this);
+        View popup = getLayoutInflater().inflate(R.layout.save_popup, null);
+
+        EditText et = (EditText) popup.findViewById(R.id.gameName);
+
+        btn = (Button) popup.findViewById(R.id.saveButton);
+
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                confirmSaveFileNum = saveGame(et.getText().toString());
+                dialog.dismiss();
+                if(confirmSaveFileNum == 1) {
+                    endPopup("The game has");
+                }
+                else {
+                    tryAgain();
+                }
+            }
+        });
+
+        dialogBuilder.setView(popup);
+        dialog = dialogBuilder.create();
+        dialog.show();
+
+    }
+
+    public int saveGame(String fileName) {
+        try {
+            File file = new File(getFilesDir() + pathSeparator + fileName + ".txt");
+            if (file.exists()) {
+                throw new IOException();
+            }
+            FileOutputStream fos = openFileOutput(fileName + ".txt", Context.MODE_PRIVATE);
+
+            for (int x = 0; x < moves.size(); x++) {
+                fos.write(moves.get(x).getBytes());
+                fos.write("\n".getBytes());
+            }
+            fos.close();
+            Toast.makeText(getBaseContext(), "Success " + getFilesDir(), Toast.LENGTH_LONG).show();
+            return 1;
+        } catch (IOException e) {
+            Toast.makeText(this, "File Already Exists", Toast.LENGTH_SHORT).show();
+        }
+        return 0;
+    }
+
+    public void tryAgain() {
+        dialogBuilder = new AlertDialog.Builder(this);
+        View popup = getLayoutInflater().inflate(R.layout.try_again, null);
+
+        btn = (Button) popup.findViewById(R.id.tryAgain);
+        btnTwo = (Button) popup.findViewById(R.id.no);
+
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                save();
+            }
+        });
+
+        btnTwo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                endPopup("The game has not");
+            }
+        });
+
+        dialogBuilder.setView(popup);
+        dialog = dialogBuilder.create();
+        dialog.show();
+    }
+
+    public void endPopup(String text) {
+        dialogBuilder = new AlertDialog.Builder(this);
+        View popup = getLayoutInflater().inflate(R.layout.end_popup, null);
+
+        info = (TextView) popup.findViewById(R.id.report);
+        btn = (Button) popup.findViewById(R.id.newGame);
+
+        info.setText(text + " been saved");
+
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TextView trn = (TextView) findViewById(R.id.trn);
+                trn.setText("White's move");
+                dialog.dismiss();
+                board = new Board();
+                turn = "w";
+                moves = new ArrayList<String>();
+                printBoard();
+            }
+        });
+
+        dialogBuilder.setView(popup);
+        dialog = dialogBuilder.create();
+        dialog.show();
     }
 
     public void clearBoard() {
@@ -433,16 +582,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void createNewAlertDialog(String text, String btnName) {
-
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chess_board);
         TextView trn = (TextView) findViewById(R.id.trn);
-        trn.setText("White's turn");
+        trn.setText("White's move");
         printBoard();
     }
 }
