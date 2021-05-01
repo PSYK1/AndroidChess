@@ -198,7 +198,7 @@ public class BoardState {
 		int[] result = new int[2];
 		for(int i = 0; i < 8; i++) {
 			for(int x = 0; x < 8; x++) {
-				if((board.getPiece(i,x) != null) && board.getPiece(i,x).toString().equals(color+"K")) {
+				if((board.getPiece(i,x) != null) && board.getPiece(i,x).toString().equals(color+"k")) {
 					result[0] = i;
 					result[1] = x;
 					return result;

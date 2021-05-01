@@ -1,16 +1,18 @@
 package com.example.chess;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.res.ResourcesCompat;
 
-import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chess.chessBoard.*;
@@ -19,11 +21,18 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    ArrayList<String> moves = new ArrayList<>();
+
+    private AlertDialog.Builder dialogBuilder;
+    private AlertDialog dialog;
+    private TextView info;
+    private Button btn, btnTwo;
+
     private Board board = new Board();
 
     String turn = "w";
-    String pos1="";
-    String pos2="";
+    String pos1 = "";
+    String pos2 = "";
 
     boolean resign = false;
     boolean draw = false;
@@ -37,28 +46,28 @@ public class MainActivity extends AppCompatActivity {
      * it will return a Queen piece and the color of the piece is determined by the turn parameter.
      *
      * @param promo the type of piece to promote to
-     * @param turn the color of the piece to promote to
+     * @param turn  the color of the piece to promote to
      * @return the piece to promote to
      */
     public Piece getPromotion(String promo, String turn) {
         Piece p = new Queen(turn);
 
-        if(promo.toLowerCase().equals("q")) {
+        if (promo.toLowerCase().equals("q")) {
             p = new Queen(turn);
             p.setMoved(true);
             return p;
         }
-        if(promo.toLowerCase().equals("r")) {
+        if (promo.toLowerCase().equals("r")) {
             p = new Rook(turn);
             p.setMoved(true);
             return p;
         }
-        if(promo.toLowerCase().equals("b")) {
+        if (promo.toLowerCase().equals("b")) {
             p = new Bishop(turn);
             p.setMoved(true);
             return p;
         }
-        if(promo.toLowerCase().equals("n")) {
+        if (promo.toLowerCase().equals("n")) {
             p = new Knight(turn);
             p.setMoved(true);
             return p;
@@ -71,36 +80,36 @@ public class MainActivity extends AppCompatActivity {
      * Takes in input for pos1 and pos2 in columnRow format. Returns a Board with the piece from pos1 moved to pos2 if the move is valid
      * otherwise returns an IllegalArgumentException
      *
-     * @param pos1 the location of the piece needed to be moved in columnRow format
-     * @param pos2 the location the piece needs to be moved to in columnRow format
+     * @param pos1  the location of the piece needed to be moved in columnRow format
+     * @param pos2  the location the piece needs to be moved to in columnRow format
      * @param promo if a pawn is to be promoted the piece to be promoted to else null if a pawn is not being promoted
-     * @param turn the color of the current player
+     * @param turn  the color of the current player
      * @return the board after the changed position of a piece
      */
     public Board setPosition(String pos1, String pos2, Piece promo, String turn) {
 
-        int row1 = 8-Integer.parseInt(pos1.substring(1));
-        int col1 = (pos1.toLowerCase().charAt(0))-97;
+        int row1 = 8 - Integer.parseInt(pos1.substring(1));
+        int col1 = (pos1.toLowerCase().charAt(0)) - 97;
 
-        int row2 = 8-Integer.parseInt(pos2.substring(1));
-        int col2 = (pos2.toLowerCase().charAt(0))-97;
+        int row2 = 8 - Integer.parseInt(pos2.substring(1));
+        int col2 = (pos2.toLowerCase().charAt(0)) - 97;
 
         Piece p = board.getPiece(row1, col1);
 
         if (p == null) throw new IllegalArgumentException();
 
-        if(p.move(row1, col1, row2, col2, board, turn)) {
+        if (p.move(row1, col1, row2, col2, board, turn)) {
             Piece temp = board.getPiece(row2, col2);
 
             // Check if this puts king in jeopardy
             // Check if castling first, since we need to check for jeopardy multiple times
-            if (p instanceof King && Math.abs(col2-col1) > 1) {
+            if (p instanceof King && Math.abs(col2 - col1) > 1) {
                 // We must be castling.
                 //First, make sure that we aren't castling through check
-                int step = ((col2-col1)/Math.abs(col2-col1));
-                for (int i = col1; i != col2+step; i += step) {
+                int step = ((col2 - col1) / Math.abs(col2 - col1));
+                for (int i = col1; i != col2 + step; i += step) {
                     board.setPiece(row1, i, p);
-                    if (i != col1) board.setPiece(row1, i-step, null);
+                    if (i != col1) board.setPiece(row1, i - step, null);
                     if (isCheck(turn)) {
                         // Can't castle through check
                         // Undo the move
@@ -164,12 +173,11 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-        }
-        else {
+        } else {
             throw new IllegalArgumentException();
         }
 
-        if((row2 == 7 || row2 == 0) && board.getPiece(row2, col2) instanceof Pawn) {
+        if ((row2 == 7 || row2 == 0) && board.getPiece(row2, col2) instanceof Pawn) {
             board.setPiece(row2, col2, promo);
         }
 
@@ -185,19 +193,18 @@ public class MainActivity extends AppCompatActivity {
     public ArrayList<Move> allPossibleMoves(String color) {
         ArrayList<Move> moves = new ArrayList<>();
 
-        for(int i = 0; i < 8; i++) {
-            for(int x = 0; x < 8; x++) {
-                if(board.getPiece(i, x) != null && board.getPiece(i, x).getColor().equals(color)) {
+        for (int i = 0; i < 8; i++) {
+            for (int x = 0; x < 8; x++) {
+                if (board.getPiece(i, x) != null && board.getPiece(i, x).getColor().equals(color)) {
                     Piece p = board.getPiece(i, x);
-                    for(int y = 0; y < 8; y++) {
-                        for(int z = 0; z < 8; z++) {
-                            if(p.move(i, x, y, z, board, color)) {
+                    for (int y = 0; y < 8; y++) {
+                        for (int z = 0; z < 8; z++) {
+                            if (p.move(i, x, y, z, board, color)) {
                                 moves.add(new Move(i, x, y, z));
                             }
                         }
                     }
-                }
-                else {
+                } else {
                     continue;
                 }
             }
@@ -213,9 +220,9 @@ public class MainActivity extends AppCompatActivity {
      */
     public int[] getKingLocation(String color) {
         int[] result = new int[2];
-        for(int i = 0; i < 8; i++) {
-            for(int x = 0; x < 8; x++) {
-                if((board.getPiece(i,x) != null) && board.getPiece(i,x).toString().equals(color+"K")) {
+        for (int i = 0; i < 8; i++) {
+            for (int x = 0; x < 8; x++) {
+                if ((board.getPiece(i, x) != null) && board.getPiece(i, x).toString().equals(color + "k")) {
                     result[0] = i;
                     result[1] = x;
                     return result;
@@ -236,10 +243,10 @@ public class MainActivity extends AppCompatActivity {
 
         String opColor = (color.toLowerCase().equals("w")) ? "b" : "w";
 
-        for(int i = 0; i < 8; i++) {
-            for(int x = 0; x < 8; x++) {
-                if(board.getPiece(i, x) != null && board.getPiece(i, x).getColor().equals(opColor)) {
-                    if(board.getPiece(i, x).move(i, x, kingLocation[0], kingLocation[1], board, opColor)) {
+        for (int i = 0; i < 8; i++) {
+            for (int x = 0; x < 8; x++) {
+                if (board.getPiece(i, x) != null && board.getPiece(i, x).getColor().equals(opColor)) {
+                    if (board.getPiece(i, x).move(i, x, kingLocation[0], kingLocation[1], board, opColor)) {
                         return true;
                     }
                 }
@@ -256,49 +263,108 @@ public class MainActivity extends AppCompatActivity {
      */
     public boolean isCheckMate(String color) {
 
-        if(isCheck(color)) {
-
+        if (isCheck(color)) {
             ArrayList<Move> moves = allPossibleMoves(color);
 
             BoardState b = new BoardState();
             b.board = board.copy();
 
-            for(int x = 0; x < moves.size(); x++) {
+            for (int x = 0; x < moves.size(); x++) {
 
-                int row1 = 8-moves.get(x).getRow1();
-                char col1 = (char)(moves.get(x).getCol1()+97);
-                int row2 = 8-moves.get(x).getRow2();
-                char col2 = (char)(moves.get(x).getCol2()+97);
+                int row1 = 8 - moves.get(x).getRow1();
+                char col1 = (char) (moves.get(x).getCol1() + 97);
+                int row2 = 8 - moves.get(x).getRow2();
+                char col2 = (char) (moves.get(x).getCol2() + 97);
 
                 String loc1 = col1 + "" + row1;
                 String loc2 = col2 + "" + row2;
 
                 try {
                     b.setPosition(loc1, loc2, null, color);
-                }
-                catch(IllegalArgumentException e) {
+                    if (!(b.isCheck(color))) {
+                        return false;
+                    } else {
+                        b.board = board.copy();
+                    }
+                } catch (IllegalArgumentException e) {
 
                 }
-                if(!(b.isCheck(color))) {
-                    return false;
-                }
-                else {
-                    b.board = board.copy();
-                }
             }
-        }
-        else {
+        } else {
             return false;
         }
         return true;
     }
 
+    public void draw(View v) {
+
+        dialogBuilder = new AlertDialog.Builder(this);
+        View popup = getLayoutInflater().inflate(R.layout.draw_popup, null);
+
+        info = (TextView) popup.findViewById(R.id.info);
+        btn = (Button) popup.findViewById(R.id.accept);
+        btnTwo = (Button) popup.findViewById(R.id.decline);
+
+        btnTwo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.hide();
+            }
+        });
+
+        String player = (turn.equals("w")) ? "White" : "Black";
+
+        info.setText(player + " has offered a draw");
+
+        dialogBuilder.setView(popup);
+        dialog = dialogBuilder.create();
+        dialog.show();
+    }
+
+    public void saveOptionOnDraw(View v) {
+        dialogBuilder = new AlertDialog.Builder(this);
+        View popup = getLayoutInflater().inflate(R.layout.save_option_popup, null);
+
+        info = (TextView) popup.findViewById(R.id.txt);
+        btn = (Button) popup.findViewById(R.id.save);
+        btnTwo = (Button) popup.findViewById(R.id.noSave);
+
+        info.setText("Draw");
+
+        dialogBuilder.setView(popup);
+        dialog = dialogBuilder.create();
+        dialog.show();
+    }
+
+    public void resign(View v) {
+
+    }
+
+    public void saveOptionOnCheckmate(String winner) {
+        dialogBuilder = new AlertDialog.Builder(this);
+        View popup = getLayoutInflater().inflate(R.layout.save_option_popup, null);
+
+        info = (TextView) popup.findViewById(R.id.txt);
+        btn = (Button) popup.findViewById(R.id.save);
+        btnTwo = (Button) popup.findViewById(R.id.noSave);
+
+        info.setText(winner + " has won");
+
+        dialogBuilder.setView(popup);
+        dialog = dialogBuilder.create();
+        dialog.show();
+    }
+
+    public void save() {
+        
+    }
+
     public void clearBoard() {
         TableLayout t = findViewById(R.id.table);
-        for(int x = 0; x < t.getChildCount(); x++) {
-            TableRow row = (TableRow)t.getChildAt(x);
-            for(int i = 0; i < row.getChildCount(); i++) {
-                ConstraintLayout c = (ConstraintLayout)row.getChildAt(i);
+        for (int x = 0; x < t.getChildCount(); x++) {
+            TableRow row = (TableRow) t.getChildAt(x);
+            for (int i = 0; i < row.getChildCount(); i++) {
+                ConstraintLayout c = (ConstraintLayout) row.getChildAt(i);
                 c.removeAllViews();
             }
         }
@@ -307,12 +373,12 @@ public class MainActivity extends AppCompatActivity {
     public void printBoard() {
         clearBoard();
         TableLayout t = findViewById(R.id.table);
-        for(int x = 0; x < t.getChildCount(); x++) {
-            TableRow row = (TableRow)t.getChildAt(x);
-            for(int i = 0; i < row.getChildCount(); i++) {
-                Piece p = board.getPiece(x,i);
+        for (int x = 0; x < t.getChildCount(); x++) {
+            TableRow row = (TableRow) t.getChildAt(x);
+            for (int i = 0; i < row.getChildCount(); i++) {
+                Piece p = board.getPiece(x, i);
 
-                if(p != null) {
+                if (p != null) {
                     ConstraintLayout c = (ConstraintLayout) row.getChildAt(i);
                     ImageView img = new ImageView(this);
                     int resourceImg = getResources().getIdentifier(p.toString(), "drawable", getPackageName());
@@ -324,31 +390,59 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void move(View v) {
-        if(selectionCount == 0) {
+        TextView trn = (TextView) findViewById(R.id.trn);
+        if (selectionCount == 0) {
             pos1 = v.getResources().getResourceEntryName(v.getId());
             selectionCount++;
-        }
-        else if(selectionCount == 1) {
+        } else if (selectionCount == 1) {
             pos2 = v.getResources().getResourceEntryName(v.getId());
             try {
-                setPosition(pos1,pos2,null, turn);
-                turn = (turn=="w")?"b":"w";
+                setPosition(pos1, pos2, null, turn);
+                moves.add(pos1 + " " + pos2);
 
-            }
-            catch(Exception e) {
+                if ((turn.equals("w") && isCheck("b"))) {
+                    if (isCheckMate("b")) {
+                        saveOptionOnCheckmate("White");
+                    } else {
+                        // todo for check
+                        Toast.makeText(this, "Black is in check", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                if ((turn.equals("b") && isCheck("w"))) {
+                    if (isCheckMate("w")) {
+                        saveOptionOnCheckmate("Black");
+                    } else {
+                        // todo for check
+                        Toast.makeText(this, "White is in check", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                turn = (turn.equals("w")) ? "b" : "w";
+
+                if (turn.equals("w")) {
+                    trn.setText("White's move");
+                } else {
+                    trn.setText("Black's move");
+                }
+            } catch (IllegalArgumentException e) {
                 Toast.makeText(this, "Illegal Move", Toast.LENGTH_SHORT).show();
             }
             printBoard();
-            pos1 = "";
-            pos2 = "";
             selectionCount = 0;
         }
+    }
+
+    public void createNewAlertDialog(String text, String btnName) {
+
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chess_board);
+        TextView trn = (TextView) findViewById(R.id.trn);
+        trn.setText("White's turn");
         printBoard();
     }
 }
