@@ -4,8 +4,12 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.DragEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,6 +25,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -39,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     String turn = "w";
     String pos1 = "";
     String pos2 = "";
+
+    float xpos, ypos;
 
     boolean resign = false;
     boolean draw = false;
@@ -434,16 +441,13 @@ public class MainActivity extends AppCompatActivity {
 
     public int saveGame(String fileName) {
         try {
-            File file = new File(getFilesDir() + pathSeparator + fileName + ".txt");
-            if (file.exists()) {
-                throw new IOException();
-            }
-            FileOutputStream fos = openFileOutput(fileName + ".txt", Context.MODE_PRIVATE);
+            FileOutputStream fos = openFileOutput("games.txt", Context.MODE_APPEND);
 
+            fos.write((fileName + "," + LocalDateTime.now().toString()+",").getBytes());
             for (int x = 0; x < moves.size(); x++) {
-                fos.write(moves.get(x).getBytes());
-                fos.write("\n".getBytes());
+                fos.write((moves.get(x)+",").getBytes());
             }
+            fos.write("\n".getBytes());
             fos.close();
             Toast.makeText(getBaseContext(), "Success " + getFilesDir(), Toast.LENGTH_LONG).show();
             return 1;
@@ -538,49 +542,132 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void move(View v) {
+//    public void move(View v) {
+//        TextView trn = (TextView) findViewById(R.id.trn);
+//        if (selectionCount == 0) {
+//            pos1 = v.getResources().getResourceEntryName(v.getId());
+//            selectionCount++;
+//        } else if (selectionCount == 1) {
+//
+//            int row1 = 8 - Integer.parseInt(pos1.substring(1));
+//            int col1 = (pos1.toLowerCase().charAt(0)) - 97;
+//
+//            pos2 = v.getResources().getResourceEntryName(v.getId());
+//            try {
+//
+//                setPosition(pos1, pos2, null, turn);
+//                moves.add(pos1 + " " + pos2);
+//
+//                if ((turn.equals("w") && isCheck("b"))) {
+//                    if (isCheckMate("b")) {
+//                        saveOptionOnCheckmate("White");
+//                    } else {
+//                        Toast.makeText(this, "Black is in check", Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//
+//                if ((turn.equals("b") && isCheck("w"))) {
+//                    if (isCheckMate("w")) {
+//                        saveOptionOnCheckmate("Black");
+//                    } else {
+//                        Toast.makeText(this, "White is in check", Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//
+//                turn = (turn.equals("w")) ? "b" : "w";
+//
+//                if (turn.equals("w")) {
+//                    trn.setText("White's move");
+//                } else {
+//                    trn.setText("Black's move");
+//                }
+//            } catch (IllegalArgumentException e) {
+//                Toast.makeText(this, "Illegal Move", Toast.LENGTH_SHORT).show();
+//            }
+//            printBoard();
+//            selectionCount = 0;
+//        }
+//    }
+
+    public void setListeners() {
         TextView trn = (TextView) findViewById(R.id.trn);
-        if (selectionCount == 0) {
-            pos1 = v.getResources().getResourceEntryName(v.getId());
-            selectionCount++;
-        } else if (selectionCount == 1) {
-            pos2 = v.getResources().getResourceEntryName(v.getId());
-            try {
-                setPosition(pos1, pos2, null, turn);
-                moves.add(pos1 + " " + pos2);
+        TableLayout t = findViewById(R.id.table);
+        for (int x = 0; x < t.getChildCount(); x++) {
+            TableRow row = (TableRow) t.getChildAt(x);
+            for (int i = 0; i < row.getChildCount(); i++) {
+                ConstraintLayout c = (ConstraintLayout) row.getChildAt(i);
+                c.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (selectionCount == 0) {
+                            pos1 = v.getResources().getResourceEntryName(v.getId());
+                            selectionCount++;
+                        } else if (selectionCount == 1) {
 
-                if ((turn.equals("w") && isCheck("b"))) {
-                    if (isCheckMate("b")) {
-                        saveOptionOnCheckmate("White");
-                    } else {
-                        // todo for check
-                        Toast.makeText(this, "Black is in check", Toast.LENGTH_SHORT).show();
+                            int row1 = 8 - Integer.parseInt(pos1.substring(1));
+                            int col1 = (pos1.toLowerCase().charAt(0)) - 97;
+
+                            pos2 = v.getResources().getResourceEntryName(v.getId());
+                            try {
+
+                                setPosition(pos1, pos2, new Queen(turn), turn);
+                                moves.add(pos1 + " " + pos2);
+
+                                if ((turn.equals("w") && isCheck("b"))) {
+                                    if (isCheckMate("b")) {
+                                        saveOptionOnCheckmate("White");
+                                    } else {
+                                        Toast.makeText(MainActivity.this, "Black is in check", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                                if ((turn.equals("b") && isCheck("w"))) {
+                                    if (isCheckMate("w")) {
+                                        saveOptionOnCheckmate("Black");
+                                    } else {
+                                        Toast.makeText(MainActivity.this, "White is in check", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                                turn = (turn.equals("w")) ? "b" : "w";
+
+                                if (turn.equals("w")) {
+                                    trn.setText("White's move");
+                                } else {
+                                    trn.setText("Black's move");
+                                }
+                            } catch (IllegalArgumentException e) {
+                                Toast.makeText(MainActivity.this, "Illegal Move", Toast.LENGTH_SHORT).show();
+                            }
+                            printBoard();
+                            selectionCount = 0;
+                        }
                     }
-                }
-
-                if ((turn.equals("b") && isCheck("w"))) {
-                    if (isCheckMate("w")) {
-                        saveOptionOnCheckmate("Black");
-                    } else {
-                        // todo for check
-                        Toast.makeText(this, "White is in check", Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                turn = (turn.equals("w")) ? "b" : "w";
-
-                if (turn.equals("w")) {
-                    trn.setText("White's move");
-                } else {
-                    trn.setText("Black's move");
-                }
-            } catch (IllegalArgumentException e) {
-                Toast.makeText(this, "Illegal Move", Toast.LENGTH_SHORT).show();
+                });
             }
-            printBoard();
-            selectionCount = 0;
         }
+
     }
+
+//    public void setTouchListeners() {
+//        TextView trn = (TextView) findViewById(R.id.trn);
+//        TableLayout t = findViewById(R.id.table);
+//
+//        t.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                if(event.getAction() == MotionEvent.ACTION_UP) {
+//                    if(selectionCount == 0) {
+//                        xpos = event.getX();
+//                        ypos = event.getY();
+//                        ConstraintLayout c =
+//                        pos1 = 3
+//                    }
+//                }
+//                return false;
+//            }
+//        });
+//    }
 
     public int aiMoveHelper(Move m) {
         TextView trn = (TextView) findViewById(R.id.trn);
@@ -596,6 +683,8 @@ public class MainActivity extends AppCompatActivity {
             Piece p = new Queen(turn);
 
             setPosition(loc1, loc2, p, turn);
+
+            moves.add(loc1 + " " + loc2);
 
             if ((turn.equals("w") && isCheck("b"))) {
                 if (isCheckMate("b")) {
@@ -628,9 +717,9 @@ public class MainActivity extends AppCompatActivity {
 
         int num = 0;
         int x = 0;
-        while(num == 0 && x < moves.size()) {
+        while(num == 0) {
+            x = (int) (Math.random() * ((moves.size() - 1)));
             num = aiMoveHelper(moves.get(x));
-            x++;
         }
 
     }
@@ -641,6 +730,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.chess_board);
         TextView trn = (TextView) findViewById(R.id.trn);
         trn.setText("White's move");
+        setListeners();
         printBoard();
     }
 }
