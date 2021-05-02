@@ -9,6 +9,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Chess">
+        <activity
+            android:name=".replays"
+            android:parentActivityName=".MainActivity"
+            android:label="@string/title_activity_replays"
+            android:theme="@style/Theme.Chess.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.chess.MainActivity"/>
+        </activity>
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
