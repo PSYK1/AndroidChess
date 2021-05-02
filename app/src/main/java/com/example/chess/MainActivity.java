@@ -582,6 +582,59 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public int aiMoveHelper(Move m) {
+        TextView trn = (TextView) findViewById(R.id.trn);
+        try {
+            int row1 = 8 - m.getRow1();
+            char col1 = (char) (m.getCol1() + 97);
+            int row2 = 8 - m.getRow2();
+            char col2 = (char) (m.getCol2() + 97);
+
+            String loc1 = col1 + "" + row1;
+            String loc2 = col2 + "" + row2;
+
+            Piece p = new Queen(turn);
+
+            setPosition(loc1, loc2, p, turn);
+
+            if ((turn.equals("w") && isCheck("b"))) {
+                if (isCheckMate("b")) {
+                    saveOptionOnCheckmate("White");
+                } else {
+                    Toast.makeText(this, "Black is in check", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            if ((turn.equals("b") && isCheck("w"))) {
+                if (isCheckMate("w")) {
+                    saveOptionOnCheckmate("Black");
+                } else {
+                    Toast.makeText(this, "White is in check", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            turn = turn.equals("w")?"b":"w";
+            trn.setText((turn.equals("w")?"White's move":"Black's move"));
+            printBoard();
+        }
+        catch(IllegalArgumentException e) {
+            return 0;
+        }
+        return 1;
+    }
+
+    public void aiMove(View v) {
+        ArrayList<Move> moves = allPossibleMoves(turn);
+
+        int num = 0;
+        int x = 0;
+        while(num == 0 && x < moves.size()) {
+            num = aiMoveHelper(moves.get(x));
+            x++;
+        }
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
