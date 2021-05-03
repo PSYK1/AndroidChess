@@ -10,15 +10,23 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Chess">
         <activity
-            android:name=".replays"
-            android:parentActivityName=".MainActivity"
-            android:label="@string/title_activity_replays"
+            android:name=".ShowReplay"
+            android:label="@string/title_activity_show_replay"
+            android:parentActivityName=".Replays"
             android:theme="@style/Theme.Chess.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.chess.MainActivity"/>
+                android:value="com.example.chess.Replays" />
         </activity>
-
+        <activity
+            android:name=".Replays"
+            android:label="@string/title_activity_replays"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Theme.Chess.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.chess.MainActivity" />
+        </activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

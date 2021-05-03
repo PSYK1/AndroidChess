@@ -24,7 +24,7 @@
             android:id="@+id/textView3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="File Name:" />
+            android:text="Game Name:" />
 
         <EditText
             android:id="@+id/gameName"
