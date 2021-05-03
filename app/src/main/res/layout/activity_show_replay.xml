@@ -22,4 +22,4 @@
 
     <include layout="@layout/content_show_replay" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>`
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
