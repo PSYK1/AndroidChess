@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewParent;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -39,14 +40,15 @@ public class MainActivity extends AppCompatActivity {
 
     private Board board = new Board();
 
+    private Board prev = board;
+
     String pathSeparator = System.getProperty("file.separator");
 
     String turn = "w";
     String pos1 = "";
     String pos2 = "";
 
-    float xpos, ypos;
-
+    private int[] loc;
     boolean resign = false;
     boolean draw = false;
     boolean checkmate = false;
@@ -503,6 +505,7 @@ public class MainActivity extends AppCompatActivity {
                 board = new Board();
                 turn = "w";
                 moves = new ArrayList<String>();
+                setListeners();
                 printBoard();
             }
         });
@@ -542,52 +545,46 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    public void move(View v) {
-//        TextView trn = (TextView) findViewById(R.id.trn);
-//        if (selectionCount == 0) {
-//            pos1 = v.getResources().getResourceEntryName(v.getId());
-//            selectionCount++;
-//        } else if (selectionCount == 1) {
-//
-//            int row1 = 8 - Integer.parseInt(pos1.substring(1));
-//            int col1 = (pos1.toLowerCase().charAt(0)) - 97;
-//
-//            pos2 = v.getResources().getResourceEntryName(v.getId());
-//            try {
-//
-//                setPosition(pos1, pos2, null, turn);
-//                moves.add(pos1 + " " + pos2);
-//
-//                if ((turn.equals("w") && isCheck("b"))) {
-//                    if (isCheckMate("b")) {
-//                        saveOptionOnCheckmate("White");
-//                    } else {
-//                        Toast.makeText(this, "Black is in check", Toast.LENGTH_SHORT).show();
-//                    }
-//                }
-//
-//                if ((turn.equals("b") && isCheck("w"))) {
-//                    if (isCheckMate("w")) {
-//                        saveOptionOnCheckmate("Black");
-//                    } else {
-//                        Toast.makeText(this, "White is in check", Toast.LENGTH_SHORT).show();
-//                    }
-//                }
-//
-//                turn = (turn.equals("w")) ? "b" : "w";
-//
-//                if (turn.equals("w")) {
-//                    trn.setText("White's move");
-//                } else {
-//                    trn.setText("Black's move");
-//                }
-//            } catch (IllegalArgumentException e) {
-//                Toast.makeText(this, "Illegal Move", Toast.LENGTH_SHORT).show();
-//            }
-//            printBoard();
-//            selectionCount = 0;
-//        }
-//    }
+    public void disallowTouch(ViewParent parent, boolean isDisallow) {
+        if (parent != null) {
+            parent.requestDisallowInterceptTouchEvent(isDisallow);
+        }
+    }
+
+    public boolean equal(Board a, Board b) {
+        for(int x = 0; x < 8; x++) {
+            for(int i = 0; i < 8; i++) {
+                if(a.getPiece(x,i) == null || b.getPiece(x,i) == null) {
+                    if(a.getPiece(x,i) == null && b.getPiece(x,i) == null) {
+
+                    } else {
+                        return false;
+                    }
+                }
+                else {
+                    if (a.getPiece(x, i).getName().equals(b.getPiece(x, i).getName())) {
+
+                    } else {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    public void undo(View v) {
+        if(!equal(board,prev)) {
+            board = prev;
+            printBoard();
+            turn = (turn=="w")?"b":"w";
+            TextView trn = findViewById(R.id.trn);
+            trn.setText((turn=="w")?"White's move":"Black's Move");
+        }
+        else {
+            Toast.makeText(this, "Can not undo", Toast.LENGTH_SHORT).show();
+        }
+    }
 
     public void setListeners() {
         TextView trn = (TextView) findViewById(R.id.trn);
@@ -596,51 +593,68 @@ public class MainActivity extends AppCompatActivity {
             TableRow row = (TableRow) t.getChildAt(x);
             for (int i = 0; i < row.getChildCount(); i++) {
                 ConstraintLayout c = (ConstraintLayout) row.getChildAt(i);
-                c.setOnClickListener(new View.OnClickListener() {
+                c.setOnTouchListener(new View.OnTouchListener() {
                     @Override
-                    public void onClick(View v) {
-                        if (selectionCount == 0) {
-                            pos1 = v.getResources().getResourceEntryName(v.getId());
-                            selectionCount++;
-                        } else if (selectionCount == 1) {
-
-                            int row1 = 8 - Integer.parseInt(pos1.substring(1));
-                            int col1 = (pos1.toLowerCase().charAt(0)) - 97;
-
-                            pos2 = v.getResources().getResourceEntryName(v.getId());
-                            try {
-
-                                setPosition(pos1, pos2, new Queen(turn), turn);
-                                moves.add(pos1 + " " + pos2);
-
-                                if ((turn.equals("w") && isCheck("b"))) {
-                                    if (isCheckMate("b")) {
-                                        saveOptionOnCheckmate("White");
-                                    } else {
-                                        Toast.makeText(MainActivity.this, "Black is in check", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-
-                                if ((turn.equals("b") && isCheck("w"))) {
-                                    if (isCheckMate("w")) {
-                                        saveOptionOnCheckmate("Black");
-                                    } else {
-                                        Toast.makeText(MainActivity.this, "White is in check", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-
-                                turn = (turn.equals("w")) ? "b" : "w";
-
-                                if (turn.equals("w")) {
-                                    trn.setText("White's move");
+                    public boolean onTouch(View v, MotionEvent event) {
+                        ViewParent parent = v.getParent();
+                        switch (event.getAction()) {
+                            case MotionEvent.ACTION_DOWN: {
+                                disallowTouch(parent, true);
+                                if (selectionCount == 0) {
+                                    pos1 = v.getResources().getResourceEntryName(v.getId());
+                                    selectionCount++;
                                 } else {
-                                    trn.setText("Black's move");
+                                    int row1 = 8 - Integer.parseInt(pos1.substring(1));
+                                    int col1 = (pos1.toLowerCase().charAt(0)) - 97;
+
+                                    pos2 = v.getResources().getResourceEntryName(v.getId());
+                                    try {
+                                        BoardState b = new BoardState();
+                                        b.board = board.copy();
+                                        try {
+                                            b.setPosition(pos1, pos2, new Queen(turn), turn);
+                                            prev = board.copy();
+                                        } catch(IllegalArgumentException e) {
+
+                                        }
+                                        setPosition(pos1, pos2, new Queen(turn), turn);
+                                        moves.add(pos1 + " " + pos2);
+
+                                        if ((turn.equals("w") && isCheck("b"))) {
+                                            if (isCheckMate("b")) {
+                                                saveOptionOnCheckmate("White");
+                                            } else {
+                                                Toast.makeText(MainActivity.this, "Black is in check", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+
+                                        if ((turn.equals("b") && isCheck("w"))) {
+                                            if (isCheckMate("w")) {
+                                                saveOptionOnCheckmate("Black");
+                                            } else {
+                                                Toast.makeText(MainActivity.this, "White is in check", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+
+                                        turn = (turn.equals("w")) ? "b" : "w";
+
+                                        if (turn.equals("w")) {
+                                            trn.setText("White's move");
+                                        } else {
+                                            trn.setText("Black's move");
+                                        }
+                                    } catch (IllegalArgumentException e) {
+                                        Toast.makeText(MainActivity.this, "Illegal Move", Toast.LENGTH_SHORT).show();
+                                    }
+                                    printBoard();
+                                    selectionCount = 0;
                                 }
-                            } catch (IllegalArgumentException e) {
-                                Toast.makeText(MainActivity.this, "Illegal Move", Toast.LENGTH_SHORT).show();
+
+                                return false;
                             }
-                            printBoard();
-                            selectionCount = 0;
+                            default:
+                                disallowTouch(parent, true);
+                                return false;
                         }
                     }
                 });
@@ -648,26 +662,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
-//    public void setTouchListeners() {
-//        TextView trn = (TextView) findViewById(R.id.trn);
-//        TableLayout t = findViewById(R.id.table);
-//
-//        t.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                if(event.getAction() == MotionEvent.ACTION_UP) {
-//                    if(selectionCount == 0) {
-//                        xpos = event.getX();
-//                        ypos = event.getY();
-//                        ConstraintLayout c =
-//                        pos1 = 3
-//                    }
-//                }
-//                return false;
-//            }
-//        });
-//    }
 
     public int aiMoveHelper(Move m) {
         TextView trn = (TextView) findViewById(R.id.trn);
@@ -681,6 +675,8 @@ public class MainActivity extends AppCompatActivity {
             String loc2 = col2 + "" + row2;
 
             Piece p = new Queen(turn);
+
+            prev = board.copy();
 
             setPosition(loc1, loc2, p, turn);
 
