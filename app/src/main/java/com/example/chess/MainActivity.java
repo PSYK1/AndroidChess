@@ -452,7 +452,7 @@ public class MainActivity extends AppCompatActivity {
             }
             fos.write("\n".getBytes());
             fos.close();
-            Toast.makeText(getBaseContext(), "Success " + getFilesDir(), Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(), "The game has been successfully saved", Toast.LENGTH_LONG).show();
             return 1;
         } catch (IOException e) {
             Toast.makeText(this, "File Already Exists", Toast.LENGTH_SHORT).show();
@@ -577,6 +577,7 @@ public class MainActivity extends AppCompatActivity {
     public void undo(View v) {
         if(!equal(board,prev)) {
             board = prev;
+            moves.remove(moves.size()-1);
             printBoard();
             turn = (turn=="w")?"b":"w";
             TextView trn = findViewById(R.id.trn);
