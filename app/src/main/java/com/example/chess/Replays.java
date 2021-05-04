@@ -10,9 +10,12 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -24,7 +27,7 @@ import java.util.ArrayList;
 public class Replays extends AppCompatActivity {
 
     private ListView listView;
-    private ArrayList<Replay> replays;
+    private ArrayList<String> replays;
 
     public static final String REPLAY_NAME = "replay_name";
     public static final String REPLAY_DATE = "replay_date";
@@ -51,20 +54,22 @@ public class Replays extends AppCompatActivity {
                     new InputStreamReader(fis));
 
             String line;
-            replays = new ArrayList<Replay>();
+            replays = new ArrayList<String>();
             while ((line = br.readLine()) != null) {
-                String[] tokens = line.split(",");
-                replays.add(new Replay(tokens));
+                replays.add(line);
             }
-        } catch (IOException e) {
-            replays = new ArrayList<Replay>();
+            Toast.makeText(this, "Loaded Games.txt successfully", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Log.d("tag1", e.getMessage());
+            Toast.makeText(this, "Failed to load Games.txt", Toast.LENGTH_SHORT).show();
+            replays = new ArrayList<String>();
         }
 
         // Set up adapter and listView
-        ArrayAdapter<Replay> adapter =
-                new ArrayAdapter<>(this, R.layout.content_replays, replays);
+        ArrayAdapter<String> adapter =
+                new ArrayAdapter<String>(this, R.layout.replay_textview, replays);
 
-        listView = findViewById(R.id.replays_list);
+        listView = (ListView) findViewById(R.id.replays_list);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener((parent, view, position, id) -> showReplay(position));
@@ -73,7 +78,11 @@ public class Replays extends AppCompatActivity {
     private void showReplay(int pos) {
         Bundle bundle = new Bundle();
 
-        Replay replay = (Replay)listView.getItemAtPosition(pos);
+        TextView selected = (TextView)listView.getItemAtPosition(pos);
+
+        String data = selected.getText().toString();
+
+        Replay replay = new Replay(data.split(","));
 
         bundle.putString(REPLAY_NAME, replay.getName());
         bundle.putString(REPLAY_DATE, replay.getDate());
@@ -83,4 +92,5 @@ public class Replays extends AppCompatActivity {
         intent.putExtras(bundle);
         startActivity(intent);
     }
+
 }
