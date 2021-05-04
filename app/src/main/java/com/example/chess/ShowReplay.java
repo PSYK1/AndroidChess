@@ -8,8 +8,13 @@ import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -60,9 +65,61 @@ public class ShowReplay extends AppCompatActivity {
             else turn = "w";
         }
 
-        // Display configurations
+        displayConfiguration();
 
+    }
 
+    private void displayConfiguration() {
+        if (currIndex >= configurations.size()) {
+            return;
+        }
+        Board config = configurations.get(currIndex);
 
+        clearBoard();
+
+        TableLayout t = findViewById(R.id.r_table);
+        for (int x = 0; x < t.getChildCount(); x++) {
+            TableRow row = (TableRow) t.getChildAt(x);
+            for (int i = 0; i < row.getChildCount(); i++) {
+                Piece p = config.getPiece(x, i);
+
+                if (p != null) {
+                    ConstraintLayout c = (ConstraintLayout) row.getChildAt(i);
+                    ImageView img = new ImageView(this);
+                    int resourceImg = getResources().getIdentifier(p.toString(), "drawable", getPackageName());
+                    img.setImageResource(resourceImg);
+                    c.addView(img);
+                }
+            }
+        }
+    }
+
+    public void clearBoard() {
+        TableLayout t = findViewById(R.id.r_table);
+        for (int x = 0; x < t.getChildCount(); x++) {
+            TableRow row = (TableRow) t.getChildAt(x);
+            for (int i = 0; i < row.getChildCount(); i++) {
+                ConstraintLayout c = (ConstraintLayout) row.getChildAt(i);
+                c.removeAllViews();
+            }
+        }
+    }
+
+    public void nextConfiguration(View v) {
+        if (currIndex == configurations.size()-1) {
+            Toast.makeText(this, "Already at final turn", Toast.LENGTH_SHORT).show();
+        } else {
+            currIndex++;
+            displayConfiguration();
+        }
+    }
+
+    public void previousConfiguration(View v) {
+        if (currIndex == 0) {
+            Toast.makeText(this, "Already at first turn", Toast.LENGTH_SHORT).show();
+        } else {
+            currIndex--;
+            displayConfiguration();
+        }
     }
 }

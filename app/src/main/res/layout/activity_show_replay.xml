@@ -6,20 +6,614 @@
     android:layout_height="match_parent"
     tools:context=".ShowReplay">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/Theme.Chess.AppBarOverlay">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/Theme.Chess.PopupOverlay" />
+            android:layout_height="wrap_content"
+            android:theme="@style/Theme.Chess.AppBarOverlay">
 
-    </com.google.android.material.appbar.AppBarLayout>
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/Theme.Chess.PopupOverlay" />
 
-    <include layout="@layout/content_show_replay" />
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <LinearLayout
+            style="?android:attr/buttonBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/prevConfig"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="210dp"
+                android:layout_height="wrap_content"
+                android:onClick="previousConfiguration"
+                android:text="@string/prevConfigString" />
+
+            <Button
+                android:id="@+id/nextConfig"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="nextConfiguration"
+                android:text="@string/nextConfigString" />
+        </LinearLayout>
+
+        <TableLayout
+            android:id="@+id/r_table"
+            android:layout_width="match_parent"
+            android:layout_height="390dp">
+
+            <TableRow
+                android:id="@+id/r_row8"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_a8"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#FFFFFF">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_b8"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#964B00">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_c8"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#FFFFFF">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_d8"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#964B00">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_e8"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#FFFFFF">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_f8"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#964B00">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_g8"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#FFFFFF">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_h8"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#964B00">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/r_row7"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_a7"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#964B00">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_b7"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#FFFFFF">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_c7"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#964B00">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_d7"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#FFFFFF">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_e7"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#964B00">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_f7"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#FFFFFF">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_g7"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#964B00">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_h7"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#FFFFFF">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/r_row6"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_a6"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#FFFFFF">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_b6"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#964B00">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_c6"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#FFFFFF">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_d6"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#964B00">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_e6"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#FFFFFF">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_f6"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#964B00">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_g6"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#FFFFFF">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_h6"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#964B00">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/r_row5"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_a5"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#964B00">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_b5"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#FFFFFF">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_c5"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#964B00">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_d5"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#FFFFFF">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_e5"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#964B00">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_f5"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#FFFFFF">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_g5"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#964B00">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_h5"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#FFFFFF">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/r_row4"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_a4"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#FFFFFF">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_b4"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#964B00">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_c4"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#FFFFFF">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_d4"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#964B00">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_e4"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#FFFFFF">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_f4"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#964B00">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_g4"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#FFFFFF">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_h4"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#964B00">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/r_row3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_a3"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#964B00">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_b3"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#FFFFFF">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_c3"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#964B00">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_d3"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#FFFFFF">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_e3"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#964B00">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_f3"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#FFFFFF">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_g3"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#964B00">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_h3"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#FFFFFF">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/r_row2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_a2"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#FFFFFF">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_b2"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#964B00">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_c2"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#FFFFFF">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_d2"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#964B00">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_e2"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#FFFFFF">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_f2"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#964B00">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_g2"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#FFFFFF">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_h2"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#964B00">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/r_row1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_a1"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#964B00">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_b1"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#FFFFFF">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_c1"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#964B00">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_d1"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#FFFFFF">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_e1"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#964B00">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_f1"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#FFFFFF">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_g1"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#964B00">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/r_h1"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#FFFFFF">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </TableRow>
+        </TableLayout>
+
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

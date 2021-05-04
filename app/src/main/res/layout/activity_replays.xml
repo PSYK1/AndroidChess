@@ -7,7 +7,6 @@
     tools:context=".Replays">
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical"
         android:layout_height="match_parent"
         android:layout_width="match_parent">
@@ -26,10 +25,27 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
+        <Button
+            android:id="@+id/sortDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="sortByDate"
+            android:text="@string/sortDateString" />
+
+        <Button
+            android:id="@+id/sortName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="sortByName"
+            android:text="@string/sortNameString" />
+
         <ListView
             android:id="@+id/replays_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent">
+
+        </ListView>
+
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
