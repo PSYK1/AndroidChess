@@ -6,6 +6,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.DragEvent;
@@ -717,7 +718,11 @@ public class MainActivity extends AppCompatActivity {
             x = (int) (Math.random() * ((moves.size() - 1)));
             num = aiMoveHelper(moves.get(x));
         }
+    }
 
+    public void switchToReplays(View v) {
+        Intent intent = new Intent(this, Replays.class);
+        startActivity(intent);
     }
 
     @Override

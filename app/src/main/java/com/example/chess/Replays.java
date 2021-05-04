@@ -43,7 +43,7 @@ public class Replays extends AppCompatActivity {
         // Populate ListView
         // Get Replay array
 
-        String address = getFilesDir() + System.getProperty("file.separator") + "games.txt";
+        String address = "games.txt";
 
         try {
             FileInputStream fis = openFileInput(address);
@@ -53,7 +53,7 @@ public class Replays extends AppCompatActivity {
             String line;
             replays = new ArrayList<Replay>();
             while ((line = br.readLine()) != null) {
-                String[] tokens = line.split("\\|");
+                String[] tokens = line.split(",");
                 replays.add(new Replay(tokens));
             }
         } catch (IOException e) {
